@@ -16,7 +16,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 //import java.util.Date;
 import java.util.List;
 //import java.util.logging.Level;
@@ -25,6 +29,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -285,15 +290,40 @@ public class ActionHandler implements ActionListener, ListSelectionListener {
     }
 
     private void invoiceOK() {
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        String date = newInvoiceDialog.getInvDateField().getText();
         String dateText = newInvoiceDialog.getInvDateField().getText();
         String customerN = newInvoiceDialog.getCustNameField().getText();
         int number = frame.getFollowingInvNumber();
-        InvoiceHeader invHeader = new InvoiceHeader(number, dateText, customerN);
-        frame.getInvoices().add(invHeader);
-        frame.getInvoicesTableModel().fireTableDataChanged();
-        newInvoiceDialog.setVisible(false);
-        newInvoiceDialog.dispose();
-        newInvoiceDialog = null;
+        try {
+            String[] splitDate = date.split("-");
+
+            if (splitDate.length < 3 ) {
+                JOptionPane.showMessageDialog(frame,
+                        "please enter a valid date", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            } else {
+                int checkDayFormat = Integer.parseInt(splitDate[0]);
+                int checkMonthFormat = Integer.parseInt(splitDate[1]);
+                int checkYearFormat = Integer.parseInt(splitDate[2]);
+                if (checkDayFormat > 31 ||  checkMonthFormat >12  ){
+                     JOptionPane.showMessageDialog(frame,
+                        "please enter a valid date", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                }
+                else {
+                InvoiceHeader invHeader = new InvoiceHeader(number, dateText, customerN);
+                frame.getInvoices().add(invHeader);
+                frame.getInvoicesTableModel().fireTableDataChanged();
+                newInvoiceDialog.setVisible(false);
+                newInvoiceDialog.dispose();
+                newInvoiceDialog = null;
+            }}
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(frame,
+                    "please enter a valid date", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
 
     }
 
