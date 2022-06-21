@@ -19,7 +19,7 @@
                 <Property name="text" type="java.lang.String" value="Load File"/>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="loadMenu.addActionListener(handler);&#xd;&#xa;"/>
+                <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="loadMenu.addActionListener(operationHandler);&#xd;&#xa;"/>
               </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="saveMenu">
@@ -30,7 +30,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveMenuActionPerformed"/>
               </Events>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="saveMenu.addActionListener(handler);&#xd;&#xa;"/>
+                <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="saveMenu.addActionListener(operationHandler);&#xd;&#xa;"/>
               </AuxValues>
             </MenuItem>
           </SubComponents>

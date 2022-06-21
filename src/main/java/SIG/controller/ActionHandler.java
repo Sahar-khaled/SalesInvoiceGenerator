@@ -53,6 +53,7 @@ public class ActionHandler implements ActionListener, ListSelectionListener {
 //    private JTextField customerName;
 //    private JButton okBtn;
 //    private JButton cancelBtn;
+    
     @Override
     public void actionPerformed(ActionEvent e) {
 
@@ -82,18 +83,18 @@ public class ActionHandler implements ActionListener, ListSelectionListener {
                 break;
 
             }
-            case "Load File" -> {
-                System.out.println("Load File  ");
-                loadFile();
-                break;
-
-            }
-            case "Save File" -> {
-                System.out.println("Save File  ");
-                saveFile();
-                break;
-
-            }
+//            case "Load File" -> {
+//                System.out.println("Load File  ");
+//                loadFile();
+//                break;
+//
+//            }
+//            case "Save File" -> {
+//                System.out.println("Save File  ");
+//                saveFile();
+//                break;
+//
+//            }
             case "start Invoice OK" -> {
                 System.out.println("Invoice OK ");
                 invoiceOK();
@@ -144,133 +145,168 @@ public class ActionHandler implements ActionListener, ListSelectionListener {
     }
 
     private void deleteItem() {
-        int chosenInvoice = frame.getInvoiceHeaderTable().getSelectedRow();
+//        int selectedRow = frame.getLineTable().getSelectedRow();
         int chosenItemRow = frame.getInvoiceLineTable().getSelectedRow();
 
-        if (chosenInvoice != -1 && chosenItemRow != -1) {
-            InvoiceHeader inv = frame.getInvoices().get(chosenInvoice);
-            inv.getLines().remove(chosenItemRow);
-
-            frame.getInvoices().remove(chosenItemRow);
-            frame.getInvoicesTableModel().fireTableDataChanged();
-            LinesTableModel linesTableModel = new LinesTableModel(inv.getLines());
-            frame.getInvoiceLineTable().setModel(linesTableModel);
+        if (chosenItemRow != -1) {
+            LinesTableModel linesTableModel = (LinesTableModel) frame.getInvoiceLineTable().getModel();
+            linesTableModel.getInvoicesLines().remove(chosenItemRow);
             linesTableModel.fireTableDataChanged();
             frame.getInvoicesTableModel().fireTableDataChanged();
-
         }
     }
 
-    private void loadFile() {
-        try {
-            JFileChooser fileChooser = new JFileChooser();
-            int click = fileChooser.showOpenDialog(frame);
-            if (click == JFileChooser.APPROVE_OPTION) {
-                File header = fileChooser.getSelectedFile();
-                Path headerPath = Paths.get(header.getAbsolutePath());
-                List<String> linesOfHeaders = Files.readAllLines(headerPath);
-                System.out.println("read lines of invoices");
-                ArrayList<InvoiceHeader> arrOfInvoices = new ArrayList<>();
-
-                for (String oneHeaderLine : linesOfHeaders) {
-                    String[] headersArr = oneHeaderLine.split(",");
-
-                    int invNumber = Integer.parseInt(headersArr[0]);
-
-                    String invDate = headersArr[1];
-
-                    String invCustomerName = headersArr[2];
-
-                    InvoiceHeader inv = new InvoiceHeader(
-                            invNumber, invDate, invCustomerName);
-                    arrOfInvoices.add(inv);
-
-                }
-                System.out.println("watch invoice");
-                click = fileChooser.showOpenDialog(frame);
-                if (click == JFileChooser.APPROVE_OPTION) {
-                    File line = fileChooser.getSelectedFile();
-                    Path linePath = Paths.get(line.getAbsolutePath());
-                    List<String> linesOfLines = Files.readAllLines(linePath);
-                    System.out.println("read lines of invoices lines ");
-                    for (String oneLine : linesOfLines) {
-                        String linesArr[] = oneLine.split(",");
-                        int invoiceNum = Integer.parseInt(linesArr[0]);
-                        String name = linesArr[1];
-                        double price = Double.parseDouble(linesArr[2]);
-                        int count = Integer.parseInt(linesArr[3]);
-
-                        InvoiceHeader invc = null;
-                        for (InvoiceHeader invoiceHeader : arrOfInvoices) {
-                            if (invoiceHeader.getNum() == invoiceNum) {
-                                invc = invoiceHeader;
-                                break;
-                            }
-                        }
-
-                        InvoiceLine l = new InvoiceLine(
-                                invc,
-                                name,
-                                price,
-                                count
-                        );
-                        invc.getLines().add(l);
-                    }
-                    System.out.println("TEST lines ");
-
-                }
-                frame.setInvoices(arrOfInvoices);
-                InvoicesTableModel invoicesTableModel = new InvoicesTableModel(arrOfInvoices);
-                frame.setInvoicesTableModel(invoicesTableModel);
-                frame.getInvoiceHeaderTable().setModel(invoicesTableModel);
-                frame.getInvoicesTableModel().fireTableDataChanged();
-
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
-    }
-
-    private void saveFile() {
-        ArrayList<InvoiceHeader> invoiceHeaders = frame.getInvoices();
-        String invHeaders = "";
-        String invLines = "";
-
-        for (InvoiceHeader invoice : invoiceHeaders) {
-            String invHeadersFormat = invoice.getInvoiceFormat();
-            invHeaders += invHeadersFormat;
-            invHeaders += "\n";
-
-            for (InvoiceLine inv : invoice.getLines()) {
-                String linessFormat = inv.getLineFormat();
-                invLines += linessFormat;
-                invLines += "\n";
-            }
-        }
-        System.out.println("test format");
-        try {
-            JFileChooser fileChooser = new JFileChooser();
-            int fileSaver = fileChooser.showSaveDialog(frame);
-            if (fileSaver == JFileChooser.APPROVE_OPTION) {
-                File invFile = fileChooser.getSelectedFile();
-                FileWriter invFileWriter = new FileWriter(invFile);
-                invFileWriter.write(invHeaders);
-                invFileWriter.flush();
-                invFileWriter.close();
-
-                fileSaver = fileChooser.showSaveDialog(frame);
-            }
-            if (fileSaver == JFileChooser.APPROVE_OPTION) {
-                File lineFile = fileChooser.getSelectedFile();
-                FileWriter lineFileWriter = new FileWriter(lineFile);
-                lineFileWriter.write(invLines);
-                lineFileWriter.flush();
-                lineFileWriter.close();
-            }
-        } catch (Exception e) {
-        }
-    }
+//    private void deleteItem() {
+//       int chosenInvoice = frame.getInvoiceHeaderTable().getSelectedRow();
+//        int chosenItemRow = frame.getInvoiceLineTable().getSelectedRow();
+//
+//        if (chosenInvoice != -1 && chosenItemRow != -1) {
+//           InvoiceHeader inv = frame.getInvoices().get(chosenInvoice);
+//           inv.getLines().remove(chosenItemRow);
+//
+//          frame.getInvoices().remove(chosenItemRow);
+//           frame.getInvoicesTableModel().fireTableDataChanged();
+//           LinesTableModel linesTableModel = new LinesTableModel(inv.getLines());
+//           frame.getInvoiceLineTable().setModel(linesTableModel);
+//           linesTableModel.fireTableDataChanged();
+//           frame.getInvoicesTableModel().fireTableDataChanged()
+//       }
+//    }
+//    private void loadFile() {
+//        try {
+//            JFileChooser fileChooser = new JFileChooser();
+//            int click = fileChooser.showOpenDialog(frame);
+//            if (click == JFileChooser.APPROVE_OPTION) {
+//                File header = fileChooser.getSelectedFile();
+//                Path headerPath = Paths.get(header.getAbsolutePath());
+//                List<String> linesOfHeaders = Files.readAllLines(headerPath);
+//                System.out.println("Invoice Table File Have Successfully Added");
+//
+//                ArrayList<InvoiceHeader> arrOfInvoices = new ArrayList<>();
+//
+//                for (String oneHeaderLine : linesOfHeaders) {
+//                    String[] headersArr = oneHeaderLine.split(",");
+//
+//                    int invNumber = Integer.parseInt(headersArr[0]);
+//
+//                    String invDate = headersArr[1];
+//
+//                    String invCustomerName = headersArr[2];
+//
+//                    InvoiceHeader inv = new InvoiceHeader(
+//                            invNumber, invDate, invCustomerName);
+//                    arrOfInvoices.add(inv);
+//
+//                }
+//                click = fileChooser.showOpenDialog(frame);
+//                if (click == JFileChooser.APPROVE_OPTION) {
+//                    File line = fileChooser.getSelectedFile();
+//                    Path linePath = Paths.get(line.getAbsolutePath());
+//                    List<String> linesOfLines = Files.readAllLines(linePath);
+//                    System.out.println("Item Table File Have Successfully Added");
+//                    List<InvoiceLine> AllItems = new ArrayList<>();
+//
+//                    for (String oneLine : linesOfLines) {
+//                        String linesArr[] = oneLine.split(",");
+//                        int invoiceNum = Integer.parseInt(linesArr[0]);
+//                        String name = linesArr[1];
+//                        double price = Double.parseDouble(linesArr[2]);
+//                        int count = Integer.parseInt(linesArr[3]);
+//
+//                        InvoiceHeader invc = null;
+//
+//                        for (InvoiceHeader invoiceHeader : arrOfInvoices) {
+//                            if (invoiceHeader.getNum() == invoiceNum) {
+//                                invc = invoiceHeader;
+//                                break;
+//                            }
+//                        }
+//
+//                        InvoiceLine l = new InvoiceLine(
+//                                invc,
+//                                name,
+//                                price,
+//                                count
+//                        );
+//                        invc.getLines().add(l);
+//                        AllItems.add(l);
+//
+//                    }
+//                    int LastNumberLine = 0;
+//                    for (InvoiceLine lineItem : AllItems) {
+//                        if (LastNumberLine != lineItem.getInvoice().getNum()) {
+//                            System.out.println("******** - Invoice Number " + lineItem.getInvoice().getNum() + " - *******");
+//                            System.out.println("*************************************");
+//                            System.out.println(lineItem.getInvoice().getDate() + "," + lineItem.getInvoice().getCustomer());
+//
+//                            //     Print all items in this invoice
+//                            for (InvoiceLine SubItem : AllItems) {
+//                                if (SubItem.getInvoice().getNum() == lineItem.getInvoice().getNum()) {
+//                                    System.out.println("Item Name : " + SubItem.getName() + "   &&   Item Price : " + SubItem.getPrice() + "   &&   ItemCount : " + SubItem.getCount());
+//                                }
+//                            }
+//
+//                            System.out.println("*************************************");
+//                            LastNumberLine = lineItem.getInvoice().getNum();
+//
+//                        }
+//
+//                    }
+//
+//                }
+//
+//                frame.setInvoices(arrOfInvoices);
+//                InvoicesTableModel invoicesTableModel = new InvoicesTableModel(arrOfInvoices);
+//                frame.setInvoicesTableModel(invoicesTableModel);
+//                frame.getInvoiceHeaderTable().setModel(invoicesTableModel);
+//                frame.getInvoicesTableModel().fireTableDataChanged();
+//
+//            }
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        }
+//
+//    }
+//
+//    private void saveFile() {
+//        ArrayList<InvoiceHeader> invoiceHeaders = frame.getInvoices();
+//        String invHeaders = "";
+//        String invLines = "";
+//
+//        for (InvoiceHeader invoice : invoiceHeaders) {
+//            String invHeadersFormat = invoice.getInvoiceFormat();
+//            invHeaders += invHeadersFormat;
+//            invHeaders += "\n";
+//
+//            for (InvoiceLine inv : invoice.getLines()) {
+//                String linessFormat = inv.getLineFormat();
+//                invLines += linessFormat;
+//                invLines += "\n";
+//            }
+//        }
+//        System.out.println("test format");
+//        try {
+//            JFileChooser fileChooser = new JFileChooser();
+//            int fileSaver = fileChooser.showSaveDialog(frame);
+//            if (fileSaver == JFileChooser.APPROVE_OPTION) {
+//                File invFile = fileChooser.getSelectedFile();
+//                FileWriter invFileWriter = new FileWriter(invFile);
+//                invFileWriter.write(invHeaders);
+//                invFileWriter.flush();
+//                invFileWriter.close();
+//
+//                fileSaver = fileChooser.showSaveDialog(frame);
+//            }
+//            if (fileSaver == JFileChooser.APPROVE_OPTION) {
+//                File lineFile = fileChooser.getSelectedFile();
+//                FileWriter lineFileWriter = new FileWriter(lineFile);
+//                lineFileWriter.write(invLines);
+//                lineFileWriter.flush();
+//                lineFileWriter.close();
+//            }
+//        } catch (Exception e) {
+//        }
+//    }
 
     @Override
     public void valueChanged(ListSelectionEvent e) {
@@ -298,7 +334,7 @@ public class ActionHandler implements ActionListener, ListSelectionListener {
         try {
             String[] splitDate = date.split("-");
 
-            if (splitDate.length < 3 ) {
+            if (splitDate.length < 3) {
                 JOptionPane.showMessageDialog(frame,
                         "please enter a valid date", "Error",
                         JOptionPane.ERROR_MESSAGE);
@@ -306,19 +342,19 @@ public class ActionHandler implements ActionListener, ListSelectionListener {
                 int checkDayFormat = Integer.parseInt(splitDate[0]);
                 int checkMonthFormat = Integer.parseInt(splitDate[1]);
                 int checkYearFormat = Integer.parseInt(splitDate[2]);
-                if (checkDayFormat > 31 ||  checkMonthFormat >12  ){
-                     JOptionPane.showMessageDialog(frame,
-                        "please enter a valid date", "Error",
-                        JOptionPane.ERROR_MESSAGE);
+                if (checkDayFormat > 31 || checkMonthFormat > 12) {
+                    JOptionPane.showMessageDialog(frame,
+                            "please enter a valid date", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                } else {
+                    InvoiceHeader invHeader = new InvoiceHeader(number, dateText, customerN);
+                    frame.getInvoices().add(invHeader);
+                    frame.getInvoicesTableModel().fireTableDataChanged();
+                    newInvoiceDialog.setVisible(false);
+                    newInvoiceDialog.dispose();
+                    newInvoiceDialog = null;
                 }
-                else {
-                InvoiceHeader invHeader = new InvoiceHeader(number, dateText, customerN);
-                frame.getInvoices().add(invHeader);
-                frame.getInvoicesTableModel().fireTableDataChanged();
-                newInvoiceDialog.setVisible(false);
-                newInvoiceDialog.dispose();
-                newInvoiceDialog = null;
-            }}
+            }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(frame,
                     "please enter a valid date", "Error",

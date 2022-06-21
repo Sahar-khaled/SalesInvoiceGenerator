@@ -5,6 +5,7 @@
 package SIG.VIEW;
 
 import SIG.controller.ActionHandler;
+import SIG.controller.FileOperations;
 import SIG.model.InvoiceHeader;
 import SIG.model.InvoicesTableModel;
 import java.util.ArrayList;
@@ -58,9 +59,9 @@ public class InvoiceFrame extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         loadMenu = new javax.swing.JMenuItem();
-        loadMenu.addActionListener(handler);
+        loadMenu.addActionListener(operationHandler);
         saveMenu = new javax.swing.JMenuItem();
-        saveMenu.addActionListener(handler);
+        saveMenu.addActionListener(operationHandler);
 
         jMenuItem1.setText("jMenuItem1");
 
@@ -273,6 +274,8 @@ private ArrayList<InvoiceHeader> invoices;
 
 // private Controller controller = new Controller(); == handler
     private ActionHandler handler = new ActionHandler(this);
+    private FileOperations operationHandler = new FileOperations(this);
+
     private InvoicesTableModel invoicesTableModel;
 
     public JLabel getCustomerNameLabel() {

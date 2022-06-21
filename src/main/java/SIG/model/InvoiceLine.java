@@ -65,7 +65,7 @@ public class InvoiceLine {
     public String toString() {
         return "InvoiceLine{" + "invoice=" + invoice.getNum() + ", name=" + name + ", price=" + price + ", count=" + count + '}';
     }
-  public String getLineFormat () {
+    public String getLineFormat () {
         return invoice.getNum() + "," + name + "," + price + "," + count;
         
     }
